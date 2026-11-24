@@ -1,0 +1,40 @@
+# Detection rules — MITRE ATT&CK technique IDs referenced in alerts (educational mapping)
+rules:
+  cross_vlan_iot_to_server:
+    enabled: true
+    mitre: T1021  # Remote Services (lateral movement context)
+    description: IoT VLAN initiating connections to server VLAN
+    severity_base: P2
+
+  port_scan:
+    enabled: true
+    mitre: T1046  # Network Service Discovery
+    description: Fan-out connection attempts to multiple ports on one host
+    min_distinct_ports: 3
+    window_seconds: 120
+    severity_base: P2
+
+  brute_force:
+    enabled: true
+    mitre: T1110  # Brute Force
+    description: Failed auth burst followed by success from same source
+    min_failures: 5
+    window_seconds: 300
+    severity_base: P1
+
+  m365_impossible_travel:
+    enabled: true
+    mitre: T1078  # Valid Accounts
+    description: Same user sign-in from distant geos within short window
+    max_minutes_between: 30
+    severity_base: P2
+
+  vlan_boundary_violation:
+    enabled: true
+    mitre: T1599  # Network Boundary Bridging
+    description: Traffic crossing VLAN policy without allow rule
+    severity_base: P2
+
+suppression:
+  allowlisted_scanner_ports: [80, 443, 22]
+  downgrade_if_allowlisted_source: true

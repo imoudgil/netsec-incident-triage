@@ -1,0 +1,40 @@
+# Enterprise VLAN / zone map (synthetic lab topology)
+zones:
+  - id: vlan10_corp
+    name: Corporate LAN
+    vlan: 10
+    cidr: 10.10.10.0/24
+    criticality: medium
+    allowed_outbound_to:
+      - vlan20_servers
+      - external_wan
+
+  - id: vlan20_servers
+    name: Core Servers / AD
+    vlan: 20
+    cidr: 10.10.20.0/24
+    criticality: critical
+    allowed_inbound_from:
+      - vlan10_corp
+    # IoT must not initiate to servers (enforced in detector)
+
+  - id: vlan50_iot
+    name: IoT / Field Devices
+    vlan: 50
+    cidr: 10.10.50.0/24
+    criticality: high
+  # restricted: no initiation to vlan20
+
+  - id: external_wan
+    name: Internet / M365 / Azure
+    vlan: null
+    cidr: 0.0.0.0/0
+    criticality: medium
+    public_only: true
+
+# Trusted scanners / admins (false-positive suppression)
+allowlisted_sources:
+  - ip: 10.10.10.50
+    reason: Scheduled vulnerability scanner
+  - ip: 10.10.10.12
+    reason: Jump host / admin
